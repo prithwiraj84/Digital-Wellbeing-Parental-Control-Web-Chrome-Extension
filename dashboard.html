@@ -1,0 +1,426 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Aegis Wellbeing - Parental & Screen Time Dashboard</title>
+  <link rel="stylesheet" href="lib/tailwind.min.css">
+  <link rel="stylesheet" href="styles.css">
+  <script src="lib/chart.min.js"></script>
+</head>
+<body class="bg-slate-950 text-slate-100 min-h-screen flex animate-fade-in">
+  
+  <!-- Sidebar -->
+  <aside class="w-72 bg-slate-900/40 border-r border-slate-800/80 flex flex-col justify-between p-6 backdrop-blur-md">
+    <div class="space-y-8">
+      <!-- Logo -->
+      <div class="flex items-center gap-3">
+        <div class="w-10 h-10 rounded-xl bg-gradient-to-tr from-cyan-400 to-blue-600 flex items-center justify-center shadow-lg shadow-cyan-500/20">
+          <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
+          </svg>
+        </div>
+        <div>
+          <h1 class="text-lg font-bold tracking-tight text-white">Aegis Dashboard</h1>
+          <span class="text-[10px] text-cyan-400/80 font-bold uppercase tracking-wider glow-text-cyan">Parental Portal</span>
+        </div>
+      </div>
+
+      <!-- Navigation Tabs -->
+      <nav class="space-y-2 flex flex-col">
+        <button id="tab-btn-analytics" class="w-full flex items-center gap-3 px-4 py-3 rounded-xl nav-tab-active font-semibold text-sm transition-all">
+          <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 00-2-2H5a2 2 0 00-2 2v10m9-10h.01M15 21h3a2 2 0 002-2v-7a2 2 0 00-2-2h-3a2 2 0 00-2 2v7a2 2 0 002 2z" />
+          </svg>
+          <span>Analytics & Stats</span>
+        </button>
+
+        <button id="tab-btn-parental" class="w-full flex items-center justify-between px-4 py-3 rounded-xl nav-tab-inactive font-semibold text-sm transition-all">
+          <div class="flex items-center gap-3">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
+            </svg>
+            <span>Parental Controls</span>
+          </div>
+          <span id="parental-lock-badge" class="text-[10px] bg-cyan-500/10 text-cyan-400 border border-cyan-500/20 px-1.5 py-0.5 rounded font-mono">LOCKED</span>
+        </button>
+
+        <button id="tab-btn-focus" class="w-full flex items-center justify-between px-4 py-3 rounded-xl nav-tab-inactive font-semibold text-sm transition-all">
+          <div class="flex items-center gap-3">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364-6.364l-.707.707M6.343 17.657l-.707.707m0-11.314l.707.707m11.314 11.314l.707-.707M12 5a7 7 0 100 14 7 7 0 000-14z" />
+            </svg>
+            <span>Focus & Bedtime</span>
+          </div>
+          <span id="focus-lock-badge" class="text-[10px] bg-cyan-500/10 text-cyan-400 border border-cyan-500/20 px-1.5 py-0.5 rounded font-mono">LOCKED</span>
+        </button>
+      </nav>
+    </div>
+
+    <!-- Sidebar footer -->
+    <div class="space-y-4">
+      <div id="parental-unlocked-banner" class="hidden p-3 rounded-xl bg-cyan-500/5 border border-cyan-500/10 text-center">
+        <p class="text-[11px] text-cyan-400 font-medium">Session Unlocked</p>
+        <button id="btn-lock-session" class="mt-2 text-[10px] bg-cyan-500 text-white font-bold px-3 py-1 rounded-lg hover:scale-105 active:scale-95 transition-all">Lock Dashboard</button>
+      </div>
+      <div class="text-xs text-slate-500 text-center">
+        <p>Aegis Wellbeing v1.0.0</p>
+        <p class="text-[10px] mt-0.5">Secure Parental Sandbox</p>
+      </div>
+    </div>
+  </aside>
+
+  <!-- Main Content Window -->
+  <main class="flex-1 flex flex-col h-screen overflow-y-auto bg-slate-950/20">
+    
+    <!-- Top Bar -->
+    <header class="h-20 border-b border-slate-800/40 px-8 flex items-center justify-between shrink-0 bg-slate-900/10 backdrop-blur-md">
+      <div>
+        <h2 id="current-view-title" class="text-lg font-bold text-white tracking-tight">Screen Time Analytics</h2>
+        <p id="current-view-subtitle" class="text-xs text-slate-400">View aggregates and detailed usage breakdown</p>
+      </div>
+      <div class="flex items-center gap-4">
+        <!-- Date Selector -->
+        <select id="analytics-timeframe" class="glass-input text-xs rounded-xl px-4 py-2 cursor-pointer font-medium">
+          <option value="today">Today</option>
+          <option value="yesterday">Yesterday</option>
+          <option value="week">This Week</option>
+          <option value="month">This Month</option>
+        </select>
+        <span class="text-slate-700">|</span>
+        <!-- Current Time Indicator -->
+        <div class="text-right">
+          <p id="header-date" class="text-xs font-semibold text-slate-300">June 4, 2026</p>
+          <p id="header-time" class="text-[10px] text-slate-400 font-medium">18:17 PM</p>
+        </div>
+      </div>
+    </header>
+
+    <!-- Content Workspace -->
+    <div class="flex-1 p-8 relative">
+      
+      <!-- ================= ANALYTICS VIEW ================= -->
+      <section id="view-analytics" class="space-y-8 animate-fade-in-up">
+        <!-- Stats Widgets -->
+        <div class="grid grid-cols-3 gap-6">
+          <div class="glass-card rounded-2xl p-6 relative overflow-hidden">
+            <div class="absolute -right-4 -bottom-4 text-slate-800/20 transform rotate-12">
+              <svg xmlns="http://www.w3.org/2000/svg" class="h-24 w-24" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+              </svg>
+            </div>
+            <h4 class="text-xs font-semibold text-slate-400 uppercase tracking-wider mb-2">Screen Time</h4>
+            <p id="stat-screen-time" class="text-3xl font-extrabold text-white tracking-tight glow-text-cyan">0h 0m</p>
+            <p id="stat-screen-time-meta" class="text-[10px] text-slate-400 mt-2 font-medium">Total active browser time</p>
+          </div>
+
+          <div class="glass-card rounded-2xl p-6 relative overflow-hidden">
+            <div class="absolute -right-4 -bottom-4 text-slate-800/20 transform rotate-12">
+              <svg xmlns="http://www.w3.org/2000/svg" class="h-24 w-24" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1" d="M21 12a9 9 0 01-9 9m9-9a9 9 0 00-9-9m9 9H3m9 9a9 9 0 01-9-9m9 9c1.657 0 3-4.03 3-9s-1.343-9-3-9m0 18c-1.657 0-3-4.03-3-9s1.343-9 3-9m-9 9a9 9 0 019-9" />
+              </svg>
+            </div>
+            <h4 class="text-xs font-semibold text-slate-400 uppercase tracking-wider mb-2">Tracked Websites</h4>
+            <p id="stat-tracked-sites" class="text-3xl font-extrabold text-white tracking-tight">0</p>
+            <p class="text-[10px] text-slate-400 mt-2 font-medium">Unique domains logged</p>
+          </div>
+
+          <div class="glass-card rounded-2xl p-6 relative overflow-hidden">
+            <div class="absolute -right-4 -bottom-4 text-slate-800/20 transform rotate-12">
+              <svg xmlns="http://www.w3.org/2000/svg" class="h-24 w-24" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
+              </svg>
+            </div>
+            <h4 class="text-xs font-semibold text-slate-400 uppercase tracking-wider mb-2">Active Blocks</h4>
+            <p id="stat-active-blocks" class="text-3xl font-extrabold text-red-400 tracking-tight">0</p>
+            <p class="text-[10px] text-slate-400 mt-2 font-medium">Blocked domains in ruleset</p>
+          </div>
+        </div>
+
+        <!-- Chart Grid -->
+        <div class="grid grid-cols-3 gap-6">
+          <!-- Main Chart -->
+          <div class="glass-card rounded-2xl p-6 col-span-2 flex flex-col justify-between">
+            <div class="flex items-center justify-between mb-4">
+              <h3 class="text-sm font-bold text-white uppercase tracking-wider">Usage Chart</h3>
+              <span class="text-xs text-slate-400">Total Hours / Minutes</span>
+            </div>
+            <div class="h-64 relative flex items-center justify-center">
+              <canvas id="analytics-chart" class="w-full h-full"></canvas>
+            </div>
+          </div>
+
+          <!-- Quick breakdown card -->
+          <div class="glass-card rounded-2xl p-6 flex flex-col justify-between">
+            <div>
+              <h3 class="text-sm font-bold text-white uppercase tracking-wider mb-4">Top Categories</h3>
+              <div id="analytics-breakdown-list" class="space-y-4">
+                <!-- Javascript fills this -->
+              </div>
+            </div>
+            <div class="text-[10px] text-slate-400 pt-4 border-t border-slate-800/40">
+              Categorisation matches base web indices.
+            </div>
+          </div>
+        </div>
+
+        <!-- Table Breakdown -->
+        <div class="glass-card rounded-2xl p-6">
+          <div class="flex items-center justify-between mb-6">
+            <h3 class="text-sm font-bold text-white uppercase tracking-wider">Detailed Activity Logs</h3>
+            <div class="relative">
+              <input type="text" id="domain-search" placeholder="Search domain..." class="glass-input text-xs rounded-xl px-4 py-2 w-64 pl-9">
+              <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 text-slate-400 absolute left-3 top-2.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+              </svg>
+            </div>
+          </div>
+          <div class="overflow-x-auto">
+            <table class="w-full text-left text-xs">
+              <thead>
+                <tr class="text-slate-400 font-bold border-b border-slate-800/60 pb-3">
+                  <th class="py-3 px-4">Domain</th>
+                  <th class="py-3 px-4">Time Spent</th>
+                  <th class="py-3 px-4">Percentage</th>
+                  <th class="py-3 px-4 w-1/3">Visual Ratio</th>
+                </tr>
+              </thead>
+              <tbody id="analytics-table-body" class="divide-y divide-slate-800/40">
+                <!-- Javascript fills this -->
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </section>
+
+      <!-- ================= PARENTAL CONTROLS VIEW ================= -->
+      <section id="view-parental" class="space-y-8 animate-fade-in-up hidden">
+        <div class="grid grid-cols-2 gap-8">
+          <!-- Blocklist Column -->
+          <div class="glass-card rounded-2xl p-6">
+            <div class="mb-5">
+              <h3 class="text-md font-bold text-white tracking-tight flex items-center gap-2">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-red-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M18.364 18.364A9 9 0 005.636 5.636m12.728 12.728A9 9 0 015.636 5.636m12.728 12.728L5.636 5.636" />
+                </svg>
+                Domain Blocklist
+              </h3>
+              <p class="text-xs text-slate-400 mt-1">Specify domains to completely block across all tabs.</p>
+            </div>
+            
+            <!-- Add Block Input -->
+            <form id="form-add-block" class="flex gap-3 mb-6">
+              <input type="text" id="input-block-domain" placeholder="e.g. instagram.com" required class="flex-1 glass-input text-xs rounded-xl px-4 py-2.5">
+              <button type="submit" class="glow-btn-cyan text-xs px-6 py-2.5 rounded-xl flex items-center gap-1.5">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="3.5" d="M12 4v16m8-8H4" />
+                </svg>
+                Block
+              </button>
+            </form>
+
+            <!-- Block List -->
+            <div class="space-y-3 max-h-96 overflow-y-auto pr-1">
+              <h4 class="text-[10px] text-slate-400 font-bold uppercase tracking-wider">Blocked Websites</h4>
+              <div id="blocklist-container" class="space-y-2">
+                <!-- Javascript populates -->
+              </div>
+            </div>
+          </div>
+
+          <!-- App Timers Column -->
+          <div class="glass-card rounded-2xl p-6">
+            <div class="mb-5">
+              <h3 class="text-md font-bold text-white tracking-tight flex items-center gap-2">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-cyan-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+                </svg>
+                App Timers
+              </h3>
+              <p class="text-xs text-slate-400 mt-1">Set a daily active browsing limit for specific domains.</p>
+            </div>
+
+            <!-- Add App Timer -->
+            <form id="form-add-timer" class="space-y-4 mb-6">
+              <div class="flex gap-3">
+                <input type="text" id="input-timer-domain" placeholder="e.g. youtube.com" required class="flex-1 glass-input text-xs rounded-xl px-4 py-2.5">
+                <input type="number" id="input-timer-limit" placeholder="Limit (mins)" required min="1" class="w-32 glass-input text-xs rounded-xl px-4 py-2.5">
+              </div>
+              <button type="submit" class="w-full glow-btn-cyan text-xs py-2.5 rounded-xl flex items-center justify-center gap-1.5">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="3.5" d="M12 4v16m8-8H4" />
+                </svg>
+                Set App Timer
+              </button>
+            </form>
+
+            <!-- Timers List -->
+            <div class="space-y-3 max-h-96 overflow-y-auto pr-1">
+              <h4 class="text-[10px] text-slate-400 font-bold uppercase tracking-wider font-semibold">Active Daily Limits</h4>
+              <div id="timers-container" class="space-y-3">
+                <!-- Javascript populates -->
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ================= FOCUS & BEDTIME VIEW ================= -->
+      <section id="view-focus" class="space-y-8 animate-fade-in-up hidden">
+        <div class="grid grid-cols-2 gap-8">
+          
+          <!-- Focus Mode Configuration -->
+          <div class="glass-card rounded-2xl p-6 flex flex-col justify-between">
+            <div class="space-y-6">
+              <div class="flex items-center justify-between">
+                <div>
+                  <h3 class="text-md font-bold text-white tracking-tight flex items-center gap-2">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-cyan-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364-6.364l-.707.707M6.343 17.657l-.707.707m0-11.314l.707.707m11.314 11.314l.707-.707M12 5a7 7 0 100 14 7 7 0 000-14z" />
+                    </svg>
+                    Focus Mode
+                  </h3>
+                  <p class="text-xs text-slate-400 mt-1">Locks down all browsing except designated educational resources.</p>
+                </div>
+                <label class="switch-container">
+                  <input type="checkbox" id="dashboard-focus-toggle" class="switch-input">
+                  <span class="switch-slider"></span>
+                </label>
+              </div>
+
+              <!-- Allowlist Config -->
+              <div class="space-y-4">
+                <h4 class="text-xs font-bold text-slate-200">Focus Allowlist (Educational & Critical Sites)</h4>
+                
+                <form id="form-add-allowlist" class="flex gap-3">
+                  <input type="text" id="input-allow-domain" placeholder="e.g. khanacademy.org" required class="flex-1 glass-input text-xs rounded-xl px-4 py-2">
+                  <button type="submit" class="glow-btn-cyan text-xs px-4 py-2 rounded-xl flex items-center gap-1">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M12 4v16m8-8H4" />
+                    </svg>
+                    Allow
+                  </button>
+                </form>
+
+                <div id="allowlist-container" class="grid grid-cols-2 gap-2 max-h-48 overflow-y-auto pr-1">
+                  <!-- Javascript populates -->
+                </div>
+              </div>
+            </div>
+            <p class="text-[10px] text-slate-400 mt-6 border-t border-slate-800/40 pt-4">
+              Focus mode rules supersede app timers and blocklist.
+            </p>
+          </div>
+
+          <!-- Bedtime Mode Configuration -->
+          <div class="glass-card rounded-2xl p-6 flex flex-col justify-between">
+            <div class="space-y-6">
+              <div class="flex items-center justify-between">
+                <div>
+                  <h3 class="text-md font-bold text-white tracking-tight flex items-center gap-2">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-indigo-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z" />
+                    </svg>
+                    Bedtime Mode
+                  </h3>
+                  <p class="text-xs text-slate-400 mt-1">Shut down internet access entirely during designated sleep hours.</p>
+                </div>
+                <label class="switch-container">
+                  <input type="checkbox" id="dashboard-bedtime-toggle" class="switch-input">
+                  <span class="switch-slider"></span>
+                </label>
+              </div>
+
+              <!-- Time Inputs -->
+              <div class="space-y-4">
+                <h4 class="text-xs font-bold text-slate-200">Scheduled Sleep Window</h4>
+                <div class="grid grid-cols-2 gap-4">
+                  <div>
+                    <label class="block text-[10px] text-slate-400 font-semibold uppercase tracking-wider mb-1">Start Time</label>
+                    <input type="time" id="bedtime-start" class="w-full glass-input text-xs rounded-xl px-4 py-2.5 font-semibold">
+                  </div>
+                  <div>
+                    <label class="block text-[10px] text-slate-400 font-semibold uppercase tracking-wider mb-1">End Time</label>
+                    <input type="time" id="bedtime-end" class="w-full glass-input text-xs rounded-xl px-4 py-2.5 font-semibold">
+                  </div>
+                </div>
+                <button id="btn-save-bedtime" class="w-full glow-btn-cyan text-xs py-2 rounded-xl mt-2">
+                  Save Bedtime Schedule
+                </button>
+              </div>
+            </div>
+            <p class="text-[10px] text-slate-400 mt-6 border-t border-slate-800/40 pt-4">
+              Bedtime rules will enforce full-block coverage on the browser.
+            </p>
+          </div>
+        </div>
+      </section>
+
+      <!-- ================= SECURITY PIN OVERLAY ================= -->
+      <div id="pin-overlay" class="absolute inset-0 bg-slate-950/90 backdrop-blur-md flex items-center justify-center hidden rounded-2xl z-50">
+        <div class="glass-card rounded-3xl p-8 max-w-sm w-full text-center animate-fade-in-up border border-slate-800/80">
+          
+          <div id="pin-setup-flow" class="hidden space-y-6">
+            <div>
+              <div class="w-12 h-12 rounded-full bg-cyan-500/10 border border-cyan-500/30 flex items-center justify-center mx-auto mb-3">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-cyan-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
+                </svg>
+              </div>
+              <h3 id="pin-setup-title" class="text-md font-bold text-white">Create Parental PIN</h3>
+              <p id="pin-setup-subtitle" class="text-xs text-slate-400 mt-1">Set a 4-digit code to protect settings from unauthorized modifications.</p>
+            </div>
+            
+            <div class="flex justify-center gap-4 my-4">
+              <span class="pin-dot-setup pin-dot"></span>
+              <span class="pin-dot-setup pin-dot"></span>
+              <span class="pin-dot-setup pin-dot"></span>
+              <span class="pin-dot-setup pin-dot"></span>
+            </div>
+          </div>
+
+          <div id="pin-login-flow" class="space-y-6">
+            <div>
+              <div class="w-12 h-12 rounded-full bg-cyan-500/10 border border-cyan-500/30 flex items-center justify-center mx-auto mb-3">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-cyan-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
+                </svg>
+              </div>
+              <h3 class="text-md font-bold text-white">Security Unlock</h3>
+              <p class="text-xs text-slate-400 mt-1">Enter the 4-digit parental code to access controls.</p>
+            </div>
+            
+            <div class="flex justify-center gap-4 my-4">
+              <span class="pin-dot-login pin-dot"></span>
+              <span class="pin-dot-login pin-dot"></span>
+              <span class="pin-dot-login pin-dot"></span>
+              <span class="pin-dot-login pin-dot"></span>
+            </div>
+          </div>
+
+          <!-- Numerical Keypad -->
+          <div class="grid grid-cols-3 gap-3 max-w-[240px] mx-auto mt-6">
+            <button class="keypad-btn bg-slate-900/50 hover:bg-slate-800 text-white font-bold py-3 rounded-xl border border-slate-800/40 text-sm active:scale-95 transition-all" data-val="1">1</button>
+            <button class="keypad-btn bg-slate-900/50 hover:bg-slate-800 text-white font-bold py-3 rounded-xl border border-slate-800/40 text-sm active:scale-95 transition-all" data-val="2">2</button>
+            <button class="keypad-btn bg-slate-900/50 hover:bg-slate-800 text-white font-bold py-3 rounded-xl border border-slate-800/40 text-sm active:scale-95 transition-all" data-val="3">3</button>
+            <button class="keypad-btn bg-slate-900/50 hover:bg-slate-800 text-white font-bold py-3 rounded-xl border border-slate-800/40 text-sm active:scale-95 transition-all" data-val="4">4</button>
+            <button class="keypad-btn bg-slate-900/50 hover:bg-slate-800 text-white font-bold py-3 rounded-xl border border-slate-800/40 text-sm active:scale-95 transition-all" data-val="5">5</button>
+            <button class="keypad-btn bg-slate-900/50 hover:bg-slate-800 text-white font-bold py-3 rounded-xl border border-slate-800/40 text-sm active:scale-95 transition-all" data-val="6">6</button>
+            <button class="keypad-btn bg-slate-900/50 hover:bg-slate-800 text-white font-bold py-3 rounded-xl border border-slate-800/40 text-sm active:scale-95 transition-all" data-val="7">7</button>
+            <button class="keypad-btn bg-slate-900/50 hover:bg-slate-800 text-white font-bold py-3 rounded-xl border border-slate-800/40 text-sm active:scale-95 transition-all" data-val="8">8</button>
+            <button class="keypad-btn bg-slate-900/50 hover:bg-slate-800 text-white font-bold py-3 rounded-xl border border-slate-800/40 text-sm active:scale-95 transition-all" data-val="9">9</button>
+            <button class="keypad-btn text-red-400 hover:text-red-300 font-bold py-3 rounded-xl text-xs active:scale-95 transition-all" data-action="clear">Clear</button>
+            <button class="keypad-btn bg-slate-900/50 hover:bg-slate-800 text-white font-bold py-3 rounded-xl border border-slate-800/40 text-sm active:scale-95 transition-all" data-val="0">0</button>
+            <button class="keypad-btn text-slate-400 hover:text-white font-bold py-3 rounded-xl text-xs active:scale-95 transition-all" data-action="backspace">Del</button>
+          </div>
+          
+          <p id="pin-feedback" class="text-xs font-semibold mt-4 h-4 text-red-400"></p>
+        </div>
+      </div>
+
+    </div>
+  </main>
+  
+  <script src="dashboard.js"></script>
+</body>
+</html>

@@ -1,0 +1,374 @@
+/* Cyber-SaaS Style Design Tokens & Overrides - Aegis Wellbeing */
+
+@import url('https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@400;700&display=swap');
+
+:root {
+  --bg-dark-abyss: #0d111b;
+  --color-cyan-glow: #00E5FF;
+  --color-indigo-glow: #6366F1;
+  --color-neon-rose: #FF2E93;
+  --border-glass: rgba(255, 255, 255, 0.04);
+  --font-cyber: 'Outfit', sans-serif;
+  --font-mono: 'JetBrains Mono', monospace;
+}
+
+body {
+  font-family: var(--font-cyber);
+  background-color: var(--bg-dark-abyss);
+  color: #F8FAFC;
+  overflow-x: hidden;
+  position: relative;
+  min-height: 100vh;
+  
+  /* Cyber grid mesh background overlay */
+  background-image: 
+    radial-gradient(circle at 10% 20%, rgba(0, 229, 255, 0.06) 0%, transparent 40%),
+    radial-gradient(circle at 90% 80%, rgba(99, 102, 241, 0.06) 0%, transparent 40%),
+    linear-gradient(rgba(255, 255, 255, 0.005) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255, 255, 255, 0.005) 1px, transparent 1px);
+  background-size: 100% 100%, 100% 100%, 25px 25px, 25px 25px;
+}
+
+/* ================= FU-TURISTIC NEON GLASS CARDS ================= */
+.glass-card, .neon-card {
+  background: rgba(10, 14, 28, 0.6) !important;
+  backdrop-filter: blur(20px) !important;
+  -webkit-backdrop-filter: blur(20px) !important;
+  border: 1px solid rgba(0, 229, 255, 0.08) !important;
+  border-radius: 16px !important;
+  box-shadow: 
+    0 10px 40px -10px rgba(0, 0, 0, 0.7),
+    inset 0 1px 0 rgba(255, 255, 255, 0.05) !important;
+  transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1) !important;
+}
+
+.glass-card:hover, .neon-card:hover {
+  border-color: rgba(0, 229, 255, 0.3) !important;
+  box-shadow: 
+    0 12px 45px 0 rgba(0, 229, 255, 0.06),
+    0 0 25px rgba(0, 229, 255, 0.03),
+    inset 0 1px 0 rgba(255, 255, 255, 0.1) !important;
+  transform: translateY(-3px) !important;
+}
+
+/* ================= HOLOGRAPHIC CYBER BUTTONS ================= */
+.glow-btn-cyan, .neon-btn {
+  background: linear-gradient(135deg, #00E5FF 0%, #6366F1 100%) !important;
+  color: #FFFFFF !important;
+  font-weight: 800 !important;
+  text-transform: uppercase !important;
+  letter-spacing: 0.08em !important;
+  border: none !important;
+  border-radius: 12px !important;
+  box-shadow: 0 4px 20px rgba(0, 229, 255, 0.25) !important;
+  position: relative !important;
+  overflow: hidden !important;
+  transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1) !important;
+}
+
+.glow-btn-cyan:hover, .neon-btn:hover {
+  box-shadow: 0 6px 25px rgba(0, 229, 255, 0.5) !important;
+  transform: translateY(-2px) !important;
+}
+
+/* Holographic shine animation */
+.glow-btn-cyan::after, .neon-btn::after {
+  content: '';
+  position: absolute;
+  top: 0; left: -100%;
+  width: 100%; height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.25), transparent);
+  transition: all 0.75s ease;
+}
+
+.glow-btn-cyan:hover::after, .neon-btn:hover::after {
+  left: 100%;
+}
+
+/* ================= CYBER TABS & SIDEBAR ================= */
+.nav-tab-active {
+  background: linear-gradient(90deg, rgba(0, 229, 255, 0.08) 0%, rgba(99, 102, 241, 0.02) 100%) !important;
+  color: var(--color-cyan-glow) !important;
+  border-left: 3px solid var(--color-cyan-glow) !important;
+  box-shadow: inset 2px 0 8px rgba(0, 229, 255, 0.1);
+  text-shadow: 0 0 10px rgba(0, 229, 255, 0.3);
+}
+
+.nav-tab-inactive {
+  color: #94A3B8 !important;
+  border-left: 3px solid transparent !important;
+}
+.nav-tab-inactive:hover {
+  background: rgba(255, 255, 255, 0.01) !important;
+  color: #CBD5E1 !important;
+}
+
+/* ================= GLOW TEXT & NEON TAGS ================= */
+.glow-text-cyan {
+  color: var(--color-cyan-glow);
+  text-shadow: 0 0 15px rgba(0, 229, 255, 0.65);
+}
+
+.glow-text-rose {
+  color: var(--color-neon-rose);
+  text-shadow: 0 0 15px rgba(255, 46, 147, 0.65);
+}
+
+/* ================= INPUTS & FORMS ================= */
+.glass-input {
+  background: rgba(6, 8, 20, 0.8) !important;
+  border: 1px solid rgba(0, 229, 255, 0.15) !important;
+  border-radius: 12px !important;
+  color: #FFFFFF !important;
+  font-family: var(--font-cyber);
+  font-weight: 500;
+  transition: all 0.25s ease;
+}
+
+.glass-input:focus {
+  border-color: var(--color-cyan-glow) !important;
+  box-shadow: 
+    0 0 15px rgba(0, 229, 255, 0.2),
+    inset 0 1px 0 rgba(255, 255, 255, 0.05) !important;
+  background: rgba(6, 8, 20, 0.95) !important;
+  outline: none !important;
+}
+
+/* ================= ANIMATED NEON STRIPED PROGRESS BARS ================= */
+@keyframes progressStripes {
+  from { background-position: 0 0; }
+  to { background-position: 30px 0; }
+}
+
+.h-full.bg-gradient-to-r {
+  /* Fallback color and gradient */
+  background-color: #00E5FF !important;
+  background-image: 
+    linear-gradient(45deg, rgba(255, 255, 255, 0.15) 25%, transparent 25%, transparent 50%, rgba(255, 255, 255, 0.15) 50%, rgba(255, 255, 255, 0.15) 75%, transparent 75%, transparent),
+    linear-gradient(90deg, #00E5FF 0%, #6366F1 100%) !important;
+
+  /* Tailwind CSS dynamic variable stops */
+  background-image: 
+    linear-gradient(45deg, rgba(255, 255, 255, 0.15) 25%, transparent 25%, transparent 50%, rgba(255, 255, 255, 0.15) 50%, rgba(255, 255, 255, 0.15) 75%, transparent 75%, transparent),
+    linear-gradient(to right, var(--tw-gradient-stops)) !important;
+    
+  background-size: 30px 30px, 100% 100% !important;
+  animation: progressStripes 1.5s linear infinite !important;
+  box-shadow: 0 0 14px rgba(0, 229, 255, 0.7), 0 0 4px rgba(99, 102, 241, 0.4) !important;
+}
+
+/* Allow progress bar glows to spill out and be fully visible */
+.w-full.bg-slate-800\/80 {
+  overflow: visible !important;
+}
+
+/* Custom color glows for progress bars based on their starting gradient color */
+.h-full.bg-gradient-to-r.from-red-400 {
+  box-shadow: 0 0 14px rgba(248, 113, 113, 0.7), 0 0 4px rgba(244, 63, 94, 0.4) !important;
+}
+.h-full.bg-gradient-to-r.from-purple-400 {
+  box-shadow: 0 0 14px rgba(192, 132, 252, 0.7), 0 0 4px rgba(99, 102, 241, 0.4) !important;
+}
+.h-full.bg-gradient-to-r.from-emerald-400 {
+  box-shadow: 0 0 14px rgba(52, 211, 153, 0.7), 0 0 4px rgba(20, 184, 166, 0.4) !important;
+}
+.h-full.bg-gradient-to-r.from-cyan-400 {
+  box-shadow: 0 0 14px rgba(34, 211, 238, 0.7), 0 0 4px rgba(59, 130, 246, 0.4) !important;
+}
+.h-full.bg-gradient-to-r.from-blue-400 {
+  box-shadow: 0 0 14px rgba(96, 165, 250, 0.7), 0 0 4px rgba(99, 102, 241, 0.4) !important;
+}
+.h-full.bg-gradient-to-r.from-slate-400 {
+  box-shadow: 0 0 14px rgba(148, 163, 184, 0.5), 0 0 4px rgba(100, 116, 139, 0.3) !important;
+}
+
+#btn-lock-session {
+  background: linear-gradient(135deg, #00E5FF 0%, #6366F1 100%) !important;
+  color: #FFFFFF !important;
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.4);
+}
+
+/* Logo badges solid background fallback */
+.w-8.h-8.rounded-lg.bg-gradient-to-tr,
+.w-10.h-10.rounded-xl.bg-gradient-to-tr {
+  background: linear-gradient(135deg, #00E5FF 0%, #6366F1 100%) !important;
+}
+
+/* Red timer limit exceeded animation */
+.h-full.bg-red-500 {
+  background-image: 
+    linear-gradient(45deg, rgba(255, 255, 255, 0.15) 25%, transparent 25%, transparent 50%, rgba(255, 255, 255, 0.15) 50%, rgba(255, 255, 255, 0.15) 75%, transparent 75%, transparent) !important;
+  background-size: 30px 30px !important;
+  animation: progressStripes 1.5s linear infinite !important;
+  box-shadow: 0 0 12px rgba(239, 68, 68, 0.45);
+}
+
+/* ================= SECURITY PIN OVERLAY KEYPAD ================= */
+.keypad-btn {
+  background: rgba(14, 20, 42, 0.6) !important;
+  border: 1px solid rgba(255, 255, 255, 0.03) !important;
+  border-radius: 50% !important; /* Circular keys */
+  width: 58px;
+  height: 58px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: var(--font-mono) !important;
+  font-weight: 700 !important;
+  font-size: 1.15rem !important;
+  color: #CBD5E1 !important;
+  backdrop-filter: blur(8px);
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.4);
+  transition: all 0.2s cubic-bezier(0.25, 0.8, 0.25, 1) !important;
+}
+
+.keypad-btn[data-action="clear"] {
+  color: #F87171 !important;
+  font-size: 0.8rem !important;
+  font-family: var(--font-cyber) !important;
+}
+
+.keypad-btn[data-action="backspace"] {
+  color: #94A3B8 !important;
+  font-size: 0.8rem !important;
+  font-family: var(--font-cyber) !important;
+}
+
+.keypad-btn:hover {
+  background: rgba(0, 229, 255, 0.15) !important;
+  border-color: rgba(0, 229, 255, 0.5) !important;
+  color: #00E5FF !important;
+  transform: scale(1.1) !important;
+  box-shadow: 0 0 18px rgba(0, 229, 255, 0.35);
+}
+
+.keypad-btn:active {
+  transform: scale(0.92) !important;
+}
+
+/* Setup/Login Dots */
+.pin-dot {
+  width: 14px;
+  height: 14px;
+  border: 2px solid rgba(255, 255, 255, 0.2);
+  border-radius: 50%;
+  transition: all 0.2s ease;
+}
+
+.pin-dot.filled {
+  background-color: var(--color-cyan-glow);
+  border-color: var(--color-cyan-glow);
+  box-shadow: 0 0 12px var(--color-cyan-glow);
+  transform: scale(1.1);
+}
+
+/* ================= GLOWING TACTILE TOGGLE SWITCH ================= */
+.switch-container {
+  position: relative;
+  display: inline-block;
+  width: 50px;
+  height: 26px;
+}
+
+.switch-input {
+  opacity: 0;
+  width: 0;
+  height: 0;
+}
+
+.switch-slider {
+  position: absolute;
+  cursor: pointer;
+  top: 0; left: 0; right: 0; bottom: 0;
+  background-color: rgba(6, 8, 20, 0.9);
+  border: 1px solid rgba(0, 229, 255, 0.15);
+  border-radius: 26px;
+  transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+}
+
+.switch-slider:before {
+  position: absolute;
+  content: "";
+  height: 18px;
+  width: 18px;
+  left: 3px;
+  bottom: 3px;
+  background-color: #64748B;
+  border-radius: 50%;
+  transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.switch-input:checked + .switch-slider {
+  background-color: rgba(0, 229, 255, 0.08);
+  border-color: var(--color-cyan-glow);
+  box-shadow: 0 0 15px rgba(0, 229, 255, 0.2);
+}
+
+.switch-input:checked + .switch-slider:before {
+  transform: translateX(24px);
+  background: linear-gradient(135deg, #00E5FF 0%, #6366F1 100%);
+  box-shadow: 0 0 10px #00E5FF;
+}
+
+/* ========================================================= */
+/* CSS COLOR OVERRIDES FOR SLATE AND GRADIENTS */
+/* ========================================================= */
+.bg-slate-950 { background-color: #0d111b !important; }
+.bg-slate-900\/40 { background-color: rgba(10, 14, 28, 0.4) !important; }
+.bg-slate-900\/50 { background-color: rgba(10, 14, 28, 0.5) !important; }
+.bg-slate-900\/35 { background-color: rgba(10, 14, 28, 0.35) !important; }
+.bg-slate-900\/10 { background-color: rgba(10, 14, 28, 0.1) !important; }
+.bg-slate-950\/20 { background-color: rgba(13, 17, 27, 0.2) !important; }
+.bg-slate-950\/90 { background-color: rgba(13, 17, 27, 0.94) !important; }
+.bg-slate-800\/80 { background-color: rgba(30, 41, 59, 0.8) !important; }
+.bg-slate-800\/60 { background-color: rgba(30, 41, 59, 0.6) !important; }
+.bg-slate-800\/40 { background-color: rgba(30, 41, 59, 0.4) !important; }
+.bg-slate-800 { background-color: #1E293B !important; }
+.bg-slate-700 { background-color: #334155 !important; }
+.bg-slate-700\/80 { background-color: rgba(51, 65, 85, 0.8) !important; }
+
+.text-slate-100 { color: #F1F5F9 !important; }
+.text-slate-200 { color: #E2E8F0 !important; }
+.text-slate-300 { color: #CBD5E1 !important; }
+.text-slate-400 { color: #94A3B8 !important; }
+.text-slate-500 { color: #64748B !important; }
+.text-slate-700 { color: #475569 !important; }
+.text-slate-800 { color: #334155 !important; }
+.text-slate-950 { color: #020617 !important; }
+
+.border-slate-800 { border-color: #1E293B !important; }
+.border-slate-800\/80 { border-color: rgba(30, 41, 59, 0.8) !important; }
+.border-slate-800\/60 { border-color: rgba(30, 41, 59, 0.6) !important; }
+.border-slate-800\/40 { border-color: rgba(30, 41, 59, 0.4) !important; }
+.border-slate-800\/10 { border-color: rgba(30, 41, 59, 0.1) !important; }
+.border-slate-700\/80 { border-color: rgba(51, 65, 85, 0.8) !important; }
+
+.hover\:bg-slate-800\/50:hover { background-color: rgba(30, 41, 59, 0.5) !important; }
+.hover\:bg-slate-800:hover { background-color: #1E293B !important; }
+.hover\:bg-slate-900\/35:hover { background-color: rgba(10, 14, 28, 0.35) !important; }
+
+/* Custom Scrollbars */
+::-webkit-scrollbar {
+  width: 5px;
+}
+::-webkit-scrollbar-track {
+  background: rgba(13, 17, 27, 0.5);
+}
+::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.08);
+  border-radius: 4px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: var(--color-cyan-glow);
+}
+
+/* Custom inputs and controls readability improvements */
+select.glass-input option {
+  background-color: #0d111b !important;
+  color: #FFFFFF !important;
+}
+
+input[type="time"]::-webkit-calendar-picker-indicator {
+  filter: invert(1);
+  cursor: pointer;
+}
